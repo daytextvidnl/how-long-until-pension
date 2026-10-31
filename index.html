@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b2368">
+<title>How Long Until Pension?</title>
+<style>
+:root{--navy:#0b2368;--gold:#d89a0b;--ink:#17213b;--muted:#64708a;--paper:#f5f7fc;--white:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(160deg,#eef2fb 0%,#fbfaf6 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);min-height:100vh;padding:24px 14px}
+.wrap{max-width:560px;margin:0 auto}
+.top{display:flex;justify-content:flex-end;margin-bottom:12px}
+.lang{border:1px solid #d9dfed;background:white;color:var(--navy);padding:8px 13px;border-radius:999px;font-weight:700}
+.card{background:var(--white);border:1px solid #e5e9f2;border-radius:24px;box-shadow:0 18px 55px rgba(11,35,104,.10);overflow:hidden}
+.hero{background:var(--navy);color:white;text-align:center;padding:32px 22px 28px;position:relative}
+.hero:after{content:"";position:absolute;left:10%;right:10%;bottom:0;height:3px;background:var(--gold);border-radius:9px}
+.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#f2cf7d;font-weight:800}
+h1{font-size:clamp(27px,7vw,38px);line-height:1.1;margin:12px 0 8px}
+.subtitle{margin:0;color:#e1e7f6;font-size:15px}
+main{padding:25px 22px 24px}
+label{display:block;font-weight:700;font-size:14px;margin:0 0 8px;color:var(--navy)}
+input{width:100%;padding:14px 15px;border:1px solid #ccd4e4;border-radius:12px;font-size:16px;background:#fff;color:var(--ink);margin-bottom:18px}
+input:focus{outline:3px solid rgba(216,154,11,.22);border-color:var(--gold)}
+.primary{width:100%;border:0;border-radius:12px;background:var(--gold);color:#161b2b;font-weight:800;font-size:16px;padding:15px;cursor:pointer}
+.primary:active,.share:active{transform:translateY(1px)}
+.error{color:#a32b2b;font-size:13px;margin:-8px 0 14px;min-height:18px}
+.result{display:none;margin-top:24px}
+.result.show{display:block}
+.result-head{text-align:center;margin-bottom:16px}
+.result-head h2{color:var(--navy);font-size:22px;margin:0 0 5px}
+.retire-date{font-size:13px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{background:#f3f5fa;border:1px solid #e8ecf4;border-radius:16px;text-align:center;padding:16px 8px}
+.num{display:block;color:var(--navy);font-size:clamp(28px,8vw,40px);font-weight:850;line-height:1.1;font-variant-numeric:tabular-nums}
+.unit{display:block;color:var(--muted);font-size:11px;font-weight:800;letter-spacing:.1em;margin-top:7px}
+.totals{display:flex;gap:10px;margin-top:10px}
+.total{flex:1;text-align:center;padding:13px 8px;border:1px solid #ead9ae;background:#fffaf0;border-radius:13px}
+.total strong{display:block;font-size:21px;color:var(--navy)}
+.total span{font-size:11px;color:var(--muted);font-weight:700}
+.message{text-align:center;margin:17px 0 12px;font-weight:700;color:var(--navy);font-size:15px}
+.share{width:100%;border:0;border-radius:12px;background:#168b52;color:white;font-weight:800;font-size:15px;padding:14px;cursor:pointer}
+.note{font-size:11px;line-height:1.5;color:var(--muted);text-align:center;margin:17px 2px 0}
+.footer{text-align:center;color:#77819a;font-size:11px;margin:15px 0 0}
+@media(max-width:380px){main{padding:22px 16px}.hero{padding:28px 16px}.tiles{gap:8px}.tile{padding:14px 5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><button class="lang" id="langBtn" type="button">Nederlands</button></div>
+  <section class="card">
+    <header class="hero">
+      <div class="eyebrow" id="eyebrow">THE COUNTDOWN TO 60</div>
+      <h1 id="title">How Long Until Pension?</h1>
+      <p class="subtitle" id="subtitle">Your journey to retirement starts here.</p>
+    </header>
+    <main>
+      <form id="pensionForm" novalidate>
+        <label for="firstName" id="nameLabel">Your first name</label>
+        <input id="firstName" name="firstName" type="text" maxlength="30" autocomplete="given-name" placeholder="e.g. Esther" required>
+        <label for="birthDate" id="birthLabel">Your date of birth</label>
+        <input id="birthDate" name="birthDate" type="date" required>
+        <p class="error" id="error" role="alert"></p>
+        <button class="primary" id="calculateBtn" type="submit">Calculate my countdown</button>
+      </form>
+      <section class="result" id="result" aria-live="polite">
+        <div class="result-head">
+          <h2 id="resultTitle"></h2>
+          <div class="retire-date" id="retireDate"></div>
+        </div>
+        <div class="tiles">
+          <div class="tile"><span class="num" id="years">0</span><span class="unit" id="yearsLabel">YEARS</span></div>
+          <div class="tile"><span class="num" id="months">0</span><span class="unit" id="monthsLabel">MONTHS</span></div>
+          <div class="tile"><span class="num" id="weeks">0</span><span class="unit" id="weeksLabel">WEEKS</span></div>
+          <div class="tile"><span class="num" id="days">0</span><span class="unit" id="daysLabel">DAYS</span></div>
+        </div>
+        <div class="totals">
+          <div class="total"><strong id="totalWeeks">0</strong><span id="totalWeeksLabel">TOTAL WEEKS</span></div>
+          <div class="total"><strong id="totalDays">0</strong><span id="totalDaysLabel">TOTAL DAYS</span></div>
+        </div>
+        <p class="message" id="message"></p>
+        <button class="share" id="shareBtn" type="button">Share my countdown on WhatsApp</button>
+      </section>
+      <p class="note" id="privacyNote">Privacy: only your first name and birth date are used in this browser to calculate your countdown. They are not saved or sent to a database. If you share, the message you choose to send will include your first name and countdown.</p>
+    </main>
+  </section>
+  <p class="footer" id="footer">A fun countdown to age 60 · Suriname</p>
+</div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const translations = {
+    en: {
+      lang:"Nederlands", eyebrow:"THE COUNTDOWN TO 60", title:"How Long Until Pension?",
+      subtitle:"Your journey to retirement starts here.", name:"Your first name", birth:"Your date of birth",
+      placeholder:"e.g. Esther", calculate:"Calculate my countdown", years:"YEARS", months:"MONTHS",
+      weeks:"WEEKS", days:"DAYS", totalWeeks:"TOTAL WEEKS", totalDays:"TOTAL DAYS",
+      privacy:"Privacy: only your first name and birth date are used in this browser to calculate your countdown. They are not saved or sent to a database. If you share, the message you choose to send will include your first name and countdown.",
+      footer:"A fun countdown to age 60 · Suriname", invalidName:"Please enter your first name.",
+      invalidDate:"Please enter a valid date of birth that is not in the future.",
+      already:"You have reached pension age!", today:"Happy 60th birthday! Your pension-age countdown ends today.",
+      close:"Almost there!", far:"Your countdown has begun!", mid:"Retirement is getting closer!",
+      share:"Share my countdown on WhatsApp", shareText:" has {y} years, {m} months, {w} weeks and {d} days until turning 60 on {date}. How long until pension?",
+      retire:"60th birthday / countdown date: ", result:"'s Pension Countdown"
+    },
+    nl: {
+      lang:"English", eyebrow:"AFTELLEN TOT 60", title:"Hoe lang nog tot mijn pensioen?",
+      subtitle:"Jouw aftelling naar je 60ste begint hier.", name:"Je voornaam", birth:"Je geboortedatum",
+      placeholder:"bijv. Esther", calculate:"Bereken mijn aftelling", years:"JAAR", months:"MAANDEN",
+      weeks:"WEKEN", days:"DAGEN", totalWeeks:"TOTAAL WEKEN", totalDays:"TOTAAL DAGEN",
+      privacy:"Privacy: je voornaam en geboortedatum worden alleen in deze browser gebruikt om de aftelling te berekenen. Ze worden niet opgeslagen en niet naar een database verstuurd. Als je deelt, bevat het WhatsApp-bericht je voornaam en aftelling.",
+      footer:"Een leuke aftelling naar je 60ste · Suriname", invalidName:"Vul je voornaam in.",
+      invalidDate:"Vul een geldige geboortedatum in die niet in de toekomst ligt.",
+      already:"Je hebt de pensioengerechtigde leeftijd bereikt!", today:"Gefeliciteerd met je 60ste verjaardag! Vandaag eindigt je aftelling.",
+      close:"Bijna zover!", far:"De aftelling is begonnen!", mid:"Je pensioen komt steeds dichterbij!",
+      share:"Deel mijn aftelling via WhatsApp", shareText:" heeft nog {y} jaar, {m} maanden, {w} weken en {d} dagen tot de 60ste verjaardag op {date}. Hoe lang nog tot pensioen?",
+      retire:"60ste verjaardag / afteldatum: ", result:"s pensioen-aftelling"
+    }
+  };
+  let lang = "en";
+  let currentShareText = "";
+  let timer = null;
+
+  const todayLocal = () => {
+    const n = new Date();
+    return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+  };
+  const fromInput = value => {
+    const [y,m,d] = value.split("-").map(Number);
+    return new Date(y, m-1, d);
+  };
+  const addYears = (date, years) => {
+    const target = new Date(date.getFullYear()+years, date.getMonth(), date.getDate());
+    // For a 29 February birth date in a non-leap target year, use 1 March.
+    return target;
+  };
+  const dayNumber = date => Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000;
+  const formatDate = date => new Intl.DateTimeFormat(lang === "nl" ? "nl-NL" : "en-GB", {
+    day:"numeric", month:"long", year:"numeric"
+  }).format(date);
+  const addMonthsClamped = (date, count) => {
+    const y = date.getFullYear(), m = date.getMonth()+count, d = date.getDate();
+    const first = new Date(y, m, 1);
+    const lastDay = new Date(first.getFullYear(), first.getMonth()+1, 0).getDate();
+    return new Date(first.getFullYear(), first.getMonth(), Math.min(d,lastDay));
+  };
+  const calendarParts = (start, end) => {
+    let years = end.getFullYear() - start.getFullYear();
+    let cursor = addYears(start, years);
+    if (cursor > end) { years--; cursor = addYears(start, years); }
+    let months = (end.getFullYear()-cursor.getFullYear())*12 + end.getMonth()-cursor.getMonth();
+    let afterMonths = addMonthsClamped(cursor, months);
+    if (afterMonths > end) { months--; afterMonths = addMonthsClamped(cursor, months); }
+    const days = Math.max(0, Math.round(dayNumber(end)-dayNumber(afterMonths)));
+    return {years, months, days};
+  };
+  const setText = (id, value) => $(id).textContent = value;
+  const applyLanguage = () => {
+    const t = translations[lang];
+    document.documentElement.lang = lang;
+    setText("langBtn",t.lang); setText("eyebrow",t.eyebrow); setText("title",t.title);
+    setText("subtitle",t.subtitle); setText("nameLabel",t.name); setText("birthLabel",t.birth);
+    $("firstName").placeholder=t.placeholder; setText("calculateBtn",t.calculate);
+    setText("yearsLabel",t.years); setText("monthsLabel",t.months); setText("weeksLabel",t.weeks);
+    setText("daysLabel",t.days); setText("totalWeeksLabel",t.totalWeeks); setText("totalDaysLabel",t.totalDays);
+    setText("privacyNote",t.privacy); setText("footer",t.footer); setText("shareBtn",t.share);
+    if ($("result").classList.contains("show")) calculate(true);
+  };
+  const calculate = (quiet=false) => {
+    const t=translations[lang];
+    const name=$("firstName").value.trim();
+    const value=$("birthDate").value;
+    const error=$("error");
+    if (!name) { if(!quiet){setText("error",t.invalidName); $("result").classList.remove("show");} return; }
+    if (!value) { if(!quiet){setText("error",t.invalidDate); $("result").classList.remove("show");} return; }
+    const birth=fromInput(value), today=todayLocal();
+    if (Number.isNaN(birth.getTime()) || birth > today) {
+      if(!quiet){setText("error",t.invalidDate); $("result").classList.remove("show");}
+      return;
+    }
+    error.textContent="";
+    const retirement=addYears(birth,60);
+    const daysLeft=Math.max(0,Math.round(dayNumber(retirement)-dayNumber(today)));
+    const parts=calendarParts(today,retirement);
+    const weeks=Math.floor(parts.days/7), extraDays=parts.days%7;
+    setText("resultTitle",name + (lang==="nl" ? " " : "") + t.result);
+    setText("retireDate",t.retire+formatDate(retirement));
+    setText("years",daysLeft===0?0:parts.years);
+    setText("months",daysLeft===0?0:parts.months);
+    setText("weeks",daysLeft===0?0:weeks);
+    setText("days",daysLeft===0?0:extraDays);
+    setText("totalWeeks",Math.floor(daysLeft/7).toLocaleString());
+    setText("totalDays",daysLeft.toLocaleString());
+    let message;
+    if (today.getTime()===retirement.getTime()) message=t.today;
+    else if (daysLeft===0) message=t.already;
+    else if (daysLeft<365) message=t.close;
+    else if (daysLeft>3650) message=t.far;
+    else message=t.mid;
+    setText("message",message);
+    currentShareText = name + t.shareText
+      .replace("{y}",parts.years).replace("{m}",parts.months)
+      .replace("{w}",weeks).replace("{d}",extraDays).replace("{date}",formatDate(retirement));
+    $("result").classList.add("show");
+  };
+  $("pensionForm").addEventListener("submit", e => { e.preventDefault(); calculate(); });
+  $("langBtn").addEventListener("click", () => { lang=lang==="en"?"nl":"en"; applyLanguage(); });
+  $("shareBtn").addEventListener("click", () => {
+    const url="https://wa.me/?text="+encodeURIComponent(currentShareText);
+    window.open(url,"_blank","noopener,noreferrer");
+  });
+  const maxDate=todayLocal();
+  $("birthDate").max=[maxDate.getFullYear(),String(maxDate.getMonth()+1).padStart(2,"0"),String(maxDate.getDate()).padStart(2,"0")].join("-");
+  applyLanguage();
+  // Refresh the displayed countdown regularly so it stays current while the page is open.
+  timer=window.setInterval(()=>{if($("result").classList.contains("show")) calculate(true);},60000);
+})();
+</script>
+</body>
+</html>
