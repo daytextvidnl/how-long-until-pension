@@ -63,7 +63,7 @@ input:focus{outline:3px solid rgba(216,154,11,.22);border-color:var(--gold)}
         <label for="firstName" id="nameLabel">Your first name</label>
         <input id="firstName" name="firstName" type="text" maxlength="30" autocomplete="given-name" placeholder="e.g. Esther" required>
         <label for="birthDate" id="birthLabel">Your date of birth</label>
-        <input id="birthDate" name="birthDate" type="date" required>
+        <input id="birthDate" name="birthDate" type="text" placeholder="dd/mm/yyyy" inputmode="numeric" maxlength="10" autocomplete="bday" required>
         <label for="retirementAge" id="ageLabel">Planned retirement age</label>
         <input class="age-input" id="retirementAge" name="retirementAge" type="number" min="40" max="80" step="1" value="60" required>
         <p class="error" id="error" role="alert"></p>
@@ -133,8 +133,10 @@ input:focus{outline:3px solid rgba(216,154,11,.22);border-color:var(--gold)}
     return new Date(n.getFullYear(), n.getMonth(), n.getDate());
   };
   const fromInput = value => {
-    const [y,m,d] = value.split("-").map(Number);
-    return new Date(y, m-1, d);
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) return null;
+    const [d,m,y] = value.split("/").map(Number);
+    const date = new Date(y, m-1, d);
+    return date.getFullYear()===y && date.getMonth()===m-1 && date.getDate()===d ? date : null;
   };
   const addYears = (date, years) => {
     const target = new Date(date.getFullYear()+years, date.getMonth(), date.getDate());
@@ -184,7 +186,7 @@ input:focus{outline:3px solid rgba(216,154,11,.22);border-color:var(--gold)}
     const age=Number($("retirementAge").value);
     if (!Number.isInteger(age) || age<40 || age>80) { if(!quiet){setText("error",t.invalidAge); $("result").classList.remove("show");} return; }
     const birth=fromInput(value), today=todayLocal();
-    if (Number.isNaN(birth.getTime()) || birth > today) {
+    if (!birth || birth > today) {
       if(!quiet){setText("error",t.invalidDate); $("result").classList.remove("show");}
       return;
     }
@@ -220,8 +222,11 @@ input:focus{outline:3px solid rgba(216,154,11,.22);border-color:var(--gold)}
     const url="https://wa.me/?text="+encodeURIComponent(currentShareText);
     window.open(url,"_blank","noopener,noreferrer");
   });
-  const maxDate=todayLocal();
-  $("birthDate").max=[maxDate.getFullYear(),String(maxDate.getMonth()+1).padStart(2,"0"),String(maxDate.getDate()).padStart(2,"0")].join("-");
+  $("birthDate").addEventListener("input", () => {
+    const digits=$("birthDate").value.replace(/\D/g,"").slice(0,8);
+    const formatted=digits.length>4 ? digits.slice(0,2)+"/"+digits.slice(2,4)+"/"+digits.slice(4) : digits.length>2 ? digits.slice(0,2)+"/"+digits.slice(2) : digits;
+    $("birthDate").value=formatted;
+  });
   applyLanguage();
   // Refresh the displayed countdown regularly so it stays current while the page is open.
   timer=window.setInterval(()=>{if($("result").classList.contains("show")) calculate(true);},60000);
