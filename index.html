@@ -109,7 +109,7 @@ input:focus{outline:3px solid rgba(216,154,11,.22);border-color:var(--gold)}
       invalidDate:"Please enter a valid date of birth that is not in the future.", invalidAge:"Choose a retirement age from 40 to 80.",
       already:"You have reached pension age!", today:"Happy birthday! Your retirement countdown ends today.",
       close:"Almost there!", far:"Your countdown has begun!", mid:"Retirement is getting closer!",
-      share:"Share my countdown on WhatsApp", shareText:" has {y} years, {m} months, {w} weeks and {d} days until retirement at age {age} on {date}. How long until pension?",
+      share:"Share my countdown on WhatsApp", shareText:" has {y} years, {m} months, {w} weeks and {d} days until retirement at age {age} on {date}.", shareInvite:"When are you retiring? Find out!",
       retire:"Retirement date: ", result:"'s Pension Countdown"
     },
     nl: {
@@ -122,7 +122,7 @@ input:focus{outline:3px solid rgba(216,154,11,.22);border-color:var(--gold)}
       invalidDate:"Vul een geldige geboortedatum in die niet in de toekomst ligt.", invalidAge:"Kies een pensioenleeftijd van 40 tot 80 jaar.",
       already:"Je hebt de pensioengerechtigde leeftijd bereikt!", today:"Gefeliciteerd! Vandaag eindigt je aftelling.",
       close:"Bijna zover!", far:"De aftelling is begonnen!", mid:"Je pensioen komt steeds dichterbij!",
-      share:"Deel mijn aftelling via WhatsApp", shareText:" heeft nog {y} jaar, {m} maanden, {w} weken en {d} dagen tot de pensioenleeftijd van {age} jaar op {date}. Hoe lang nog tot pensioen?",
+      share:"Deel mijn aftelling via WhatsApp", shareText:" heeft nog {y} jaar, {m} maanden, {w} weken en {d} dagen tot de pensioenleeftijd van {age} jaar op {date}.", shareInvite:"Wanneer ga jij met pensioen? Bereken het maar!",
       retire:"Pensioendatum: ", result:"s pensioen-aftelling"
     }
   };
@@ -214,7 +214,8 @@ input:focus{outline:3px solid rgba(216,154,11,.22);border-color:var(--gold)}
     setText("message",message);
     currentShareText = name + t.shareText
       .replace("{y}",parts.years).replace("{m}",parts.months)
-      .replace("{w}",weeks).replace("{d}",extraDays).replace("{age}",age).replace("{date}",formatDate(retirement));
+      .replace("{w}",weeks).replace("{d}",extraDays).replace("{age}",age).replace("{date}",formatDate(retirement))
+      + "\n\n" + t.shareInvite + "\n\nhttps://daytextvidnl.github.io/how-long-until-pension/";
     $("result").classList.add("show");
   };
   $("pensionForm").addEventListener("submit", e => { e.preventDefault(); calculate(); });
